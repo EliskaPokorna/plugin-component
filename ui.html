@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 8px;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    button {
+      background: #18A0FB;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #cccccc;
+    }
+    .error {
+      color: #F24822;
+    }
+    #api-key-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="api-key-section">
+      <h3>OpenAI API Key</h3>
+      <input type="password" id="api-key" placeholder="Enter your OpenAI API key" />
+      <button id="save-key">Save Key</button>
+    </div>
+    <div>
+      <h3>Describe your design</h3>
+      <textarea id="prompt" placeholder="Enter a description of the design you want to generate..."></textarea>
+    </div>
+    <button id="generate">Generate Design</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    let isGenerating = false;
+
+    document.getElementById('generate').onclick = async () => {
+      const prompt = document.getElementById('prompt').value;
+      if (!prompt) return;
+
+      const button = document.getElementById('generate');
+      const status = document.getElementById('status');
+      
+      button.disabled = true;
+      status.textContent = 'Generating design...';
+      
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'generate-design',
+          prompt 
+        }
+      }, '*');
+    };
+
+    document.getElementById('save-key').onclick = () => {
+      const apiKey = document.getElementById('api-key').value;
+      if (apiKey) {
+        parent.postMessage({ 
+          pluginMessage: { 
+            type: 'set-api-key',
+            apiKey 
+          }
+        }, '*');
+        document.getElementById('api-key-section').style.display = 'none';
+      }
+    };
+
+    window.onmessage = (event) => {
+      const message = event.data.pluginMessage;
+      const button = document.getElementById('generate');
+      const status = document.getElementById('status');
+
+      if (message.type === 'error') {
+        status.textContent = message.message;
+        status.className = 'error';
+      } else if (message.type === 'success') {
+        status.textContent = 'Design generated successfully!';
+        status.className = '';
+      }
+      
+      button.disabled = false;
+    };
+  </script>
+</body>
+</html> 
