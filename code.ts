@@ -24,7 +24,7 @@ interface Config {
 }
 
 let config: Config = {
-  apiKey: process.env.GOOGLE_API_KEY || ''
+  apiKey: ''
 };
 
 // Load saved API key if it exists
@@ -38,7 +38,7 @@ figma.clientStorage.getAsync('google-api-key').then(savedKey => {
 
 async function callGoogleAI(prompt: string): Promise<DesignInstruction[]> {
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${config.apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -247,10 +247,10 @@ figma.clientStorage.setAsync('google-api-key', msg.apiKey);
       figma.viewport.scrollAndZoomIntoView([frame]);
       figma.ui.postMessage({ type: 'success' });
     } catch (error: any) {
-      figma.ui.postMessage({ 
-        type: 'error', 
-        message: error.message || 'Failed to generate design' 
+      figma.ui.postMessage({
+        type: 'error',
+        message: error.message || 'Failed to generate design'
       });
     }
   }
-}; 
+};

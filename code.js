@@ -12,7 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__, { width: 400, height: 300 });
 let config = {
-    apiKey: process.env.GOOGLE_API_KEY || ''
+    apiKey: ''
 };
 // Load saved API key if it exists
 figma.clientStorage.getAsync('google-api-key').then(savedKey => {
@@ -26,7 +26,7 @@ function callGoogleAI(prompt) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
-            const response = yield fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.apiKey}`, {
+            const response = yield fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${config.apiKey}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
