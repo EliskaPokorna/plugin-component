@@ -12,32 +12,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__, { width: 400, height: 300 });
 let config = {
-    apiKey: process.env.OPENAI_API_KEY || ''
+    apiKey: process.env.GOOGLE_API_KEY || ''
 };
 // Load saved API key if it exists
-figma.clientStorage.getAsync('openai-api-key').then(savedKey => {
+figma.clientStorage.getAsync('google-api-key').then(savedKey => {
     if (savedKey) {
         config.apiKey = savedKey;
         // Hide the API key input if we have a saved key
         figma.ui.postMessage({ type: 'hide-api-key' });
     }
 });
-function callOpenAI(prompt) {
+function callGoogleAI(prompt) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
-            const response = yield fetch('https://api.openai.com/v1/chat/completions', {
+            const response = yield fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.apiKey}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${config.apiKey}`,
-                    'OpenAI-Beta': 'assistants=v1'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "gpt-4-1106-preview",
-                    messages: [{
-                            role: "system",
-                            content: `You are a Figma design assistant that creates detailed UI designs. For each request:
+                    contents: [{
+                            role: "user",
+                            parts: [{ text: `You are a Figma design assistant that creates detailed UI designs. For each request:
             1. Create a parent frame with auto-layout
             2. Add specific styles (colors, shadows, padding)
             3. Include proper spacing between elements
@@ -126,13 +123,12 @@ function callOpenAI(prompt) {
                   ]
                 }
               ]
-            }`
+            }` }]
                         }, {
                             role: "user",
-                            content: prompt
+                            parts: [{ text: prompt }]
                         }],
-                    response_format: { type: "json_object" },
-                    temperature: 0.7
+                    generationConfig: { temperature: 0.7 }
                 })
             });
             if (!response.ok) {
@@ -140,11 +136,11 @@ function callOpenAI(prompt) {
                 throw new Error(((_a = error.error) === null || _a === void 0 ? void 0 : _a.message) || 'API request failed');
             }
             const data = yield response.json();
-            const parsedResponse = JSON.parse(data.choices[0].message.content);
+            const parsedResponse = JSON.parse(data.candidates[0].content.parts[0].text);
             return parsedResponse.elements || [];
         }
         catch (error) {
-            console.error('OpenAI API error:', error);
+            console.error('Google API error:', error);
             throw new Error('Failed to generate design instructions');
         }
     });
@@ -205,11 +201,11 @@ function createDesignElement(instruction, parent) {
 figma.ui.onmessage = (msg) => __awaiter(void 0, void 0, void 0, function* () {
     if (msg.type === 'set-api-key') {
         config.apiKey = msg.apiKey;
-        figma.clientStorage.setAsync('openai-api-key', msg.apiKey);
+        figma.clientStorage.setAsync('google-api-key', msg.apiKey);
     }
     else if (msg.type === 'generate-design') {
         try {
-            const instructions = yield callOpenAI(msg.prompt);
+            const instructions = yield callGoogleAI(msg.prompt);
             // Create a frame with better defaults
             const frame = figma.createFrame();
             frame.name = "Generated Design";
