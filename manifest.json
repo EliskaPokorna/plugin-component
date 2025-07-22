@@ -8,6 +8,6 @@
   "enableProposedApi": false,
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": ["https://api.openai.com"]
+    "allowedDomains": ["https://generativelanguage.googleapis.com"]
   }
 } 

@@ -1,6 +1,6 @@
 # FigGen - AI Design Generator for Figma
 
-FigGen is a powerful Figma plugin that leverages OpenAI's GPT-4 to automatically generate UI designs from text descriptions. Transform your ideas into fully-styled Figma designs with just a few words.
+FigGen is a powerful Figma plugin that leverages Google's generative AI API to automatically generate UI designs from text descriptions. Transform your ideas into fully-styled Figma designs with just a few words.
 
 ## Features
 
@@ -21,7 +21,7 @@ FigGen is a powerful Figma plugin that leverages OpenAI's GPT-4 to automatically
 ## Usage
 
 1. Open the plugin in Figma
-2. Enter your OpenAI API key (required only once)
+2. Enter your Google API key (required only once)
 3. Type a description of the design you want to create
 4. Click "Generate Design"
 5. The plugin will create a new frame with your generated design
@@ -62,12 +62,12 @@ npm run build
 
 ## Configuration
 
-The plugin requires an OpenAI API key to function. Users can enter their API key through the plugin interface, which is securely stored in Figma's client storage.
+The plugin requires a Google API key to function. Users can enter their API key through the plugin interface, which is securely stored in Figma's client storage.
 
 ## Security
 
 - API keys are stored securely using Figma's client storage
-- No sensitive data is transmitted except to OpenAI's API
+- No sensitive data is transmitted except to Google's API
 - All network requests are made over HTTPS
 
 ## Contributing
@@ -92,7 +92,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- OpenAI for providing the GPT-4 API
+- Google for providing the generative AI API
 - Figma for their excellent plugin API
 - The Figma community for inspiration and support
 
